@@ -13,7 +13,6 @@ namespace NavireHeritage.ClassesMetier
 {
     public class Port : IStationnable
     {
-        static int valSuperTanker = Convert.ToInt32(ConfigurationManager.AppSettings["valSuperTanker"]);
         private string nom;
         private string latitude;
         private string longitude;
@@ -25,6 +24,7 @@ namespace NavireHeritage.ClassesMetier
         private Dictionary<string, Navire> navireArrives = new Dictionary<string, Navire>();
         private Dictionary<string, Navire> navirePartis = new Dictionary<string, Navire>();
         private Dictionary<string, Navire> navireEnAttente = new Dictionary<string, Navire>();
+        static int valSuperTanker = Convert.ToInt32(ConfigurationManager.AppSettings["valSuperTanker"]);
 
         public string Nom { get => nom; set => nom = value; }
         public string Latitude { get => latitude;}
@@ -38,6 +38,16 @@ namespace NavireHeritage.ClassesMetier
         public Dictionary<string, Navire> NavirePartis { get => navirePartis; }
         public Dictionary<string, Navire> NavireEnAttente { get => navireEnAttente; }
 
+        /// <summary>
+        /// Constructeur de la classe Port.
+        /// </summary>
+        /// <param name="nom">Nom du port</param>
+        /// <param name="latitude">Latitude du portparam>
+        /// <param name="longitude">Longitude du port</param>
+        /// <param name="nbPortique">Nombre de portiques</param>
+        /// <param name="nbQuaisTanker">Nombre de quais tankers</param>
+        /// <param name="nbQuaisSuperTanker">Nombre de quais super tankers</param>
+        /// <param name="nbQuaisPassager">Nombre de quais passagers</param>
         public Port(string nom, string latitude, string longitude, int nbPortique, int nbQuaisTanker, int nbQuaisSuperTanker, int nbQuaisPassager)
         {
             this.nom = nom;
@@ -49,6 +59,10 @@ namespace NavireHeritage.ClassesMetier
             this.nbQuaisPassager = nbQuaisPassager;
         }
 
+        /// <summary>
+        /// Méthode permettant d'enregistrer les arrivée prévues
+        /// </summary>
+        /// <param name="navire">Le navire attendu</param>
         public void enregistrerArriveePrevue(Navire navire)
         {
             if (this.estAttendu(navire.Imo))
@@ -58,6 +72,10 @@ namespace NavireHeritage.ClassesMetier
             this.navireAttendus.Add(navire.Imo, navire);
         }
 
+        /// <summary>
+        /// Méthode permettant d'enregistrer l'arrivée d'un navire
+        /// </summary>
+        /// <param name="imo">L'imo du navire</param>
         public void enregistrerArrivee(string imo)
         {
             // Premiere vérification : Le navire est-il attendu ?
@@ -173,7 +191,6 @@ namespace NavireHeritage.ClassesMetier
                 bool trouve = false;
                 while (i < this.navireEnAttente.Count && trouve == false)
                 {
-                    i++;
                     if (this.navireEnAttente.ElementAt(i).Value.GetType().FullName == navirePartis[imo].GetType().FullName)
                     {
                         trouve = true;
@@ -186,6 +203,7 @@ namespace NavireHeritage.ClassesMetier
                             trouve = false;
                         }
                     }
+                    i++;
                 }
                 if (trouve)
                 {
